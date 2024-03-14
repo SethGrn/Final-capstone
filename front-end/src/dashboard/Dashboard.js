@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"
 import { listReservations } from "../utils/api";
+import { next, previous } from "../utils/date-time"
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -9,15 +11,20 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('date')) date = params.get('date');
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
-  useEffect(loadDashboard, [date]);
+  const [dashboardDate, setDashboardDate] = useState(date)
+
+
+  useEffect(loadDashboard, [dashboardDate]);
 
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
-    listReservations({ date }, abortController.signal)
+    listReservations({ date: dashboardDate }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
     return () => abortController.abort();
@@ -27,10 +34,12 @@ function Dashboard({ date }) {
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
+        <h4 className="mb-0">Reservations for date: {dashboardDate}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
       {JSON.stringify(reservations)}
+      <button onClick={() => setDashboardDate(next(dashboardDate))}>Next day</button>
+      <button onClick={() => setDashboardDate(previous(dashboardDate))}>Previous day</button>
     </main>
   );
 }

@@ -38,7 +38,7 @@ The table below describes the existing files in the `./back-end` folder:
 | `./back-end/src/db/connection.js`                        | The Knex connection file. You will not need to make changes to this file.                                           |
 | `./back-end/src/db/migrations`                           | The Knex migrations folder.                                                                                         |
 | `./back-end/src/db/seeds/`                               | The Knex seeds folder.                                                                                              |
-| `./back-end/src/errors/errorHandler.js`                  | Defined an Express API error handler.                                                                               |
+| `./back-end/src/errors/errorHandler.js`                  | Defined an Express API error  handler.                                                                               |
 | `./back-end/src/errors/notFound.js`                      | Defined an Express API "not found" handler.                                                                         |
 | `./back-end/src/reservations/reservations.controller.js` | A controller for the reservations resource.                                                                         |
 | `./back-end/src/reservations/reservations.router.js`     | A router for the reservations resource.                                                                             |
