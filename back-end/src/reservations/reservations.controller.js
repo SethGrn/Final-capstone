@@ -38,15 +38,51 @@ function hasOnlyValidProperties(req, res, next) {
 function validDate (req, res, next) {
   const { data = {} } = req.body;
 
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
-
   const { reservation_date } = data;
+  const reservation_day = new Date(reservation_date)
+  const day = new Date();
+
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  let errorCode = 0;
 
   const match = regex.test(reservation_date);
+  if (!match) errorCode = 1;
 
-  const error = {status: 400, message: `reservation_date (${reservation_date}) is not a valid date`}
+  // check if current date is a Tuesday
+  if (reservation_day.getDay() === 1) errorCode = 2;
 
-  return match ? next() : next(error)
+  // check if current day is in the past
+  if (reservation_day < day) errorCode = 3;
+
+
+  const invalidFormatError = {
+    status: 400,
+    message: `reservation_date (${reservation_date}) is not a valid date`
+  }
+
+  const dateIsATuesdayError = {
+    status: 400,
+    message: `reservation_date (${reservation_date}) must be a date the restaurant is open (This restaurant is closed on Tuesdays)`
+  }
+
+  const dateIsInThePastError = {
+    status: 400,
+    message: `reservation_date (${reservation_date}) must be a date in the future`
+  }
+
+  switch(errorCode) {
+    case 1:
+      next(invalidFormatError)
+      break;
+    case 2:
+      next(dateIsATuesdayError)
+      break;
+    case 3:
+      next(dateIsInThePastError)
+      break;
+    default:
+      return next();
+  }
 }
 
 // Make sure the 'time' property of the request is a valid time using regex
