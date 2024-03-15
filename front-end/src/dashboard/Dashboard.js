@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
 import { listReservations } from "../utils/api";
 import { next, previous } from "../utils/date-time"
 import ErrorAlert from "../layout/ErrorAlert";
