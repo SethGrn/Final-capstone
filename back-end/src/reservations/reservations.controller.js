@@ -1,6 +1,8 @@
 const service = require("./reservations.service")
 const asyncErrorBoundary = require("../utils/asyncErrorBoundary")
 const hasProperties = require("../utils/hasProperties")
+const currentDate = require("../utils/currentDate")
+
 const hasRequiredProperties = hasProperties(
   "first_name",
   "last_name",
@@ -40,7 +42,7 @@ function validDate (req, res, next) {
 
   const { reservation_date } = data;
   const reservation_day = new Date(reservation_date)
-  const day = new Date();
+  const day = currentDate();
 
   const regex = /^\d{4}-\d{2}-\d{2}$/;
   let errorCode = 0;
@@ -95,7 +97,22 @@ function validTime (req, res, next) {
 
   const match = regex.test(reservation_time)
 
-  const error = { status: 400, message: `reservation_time (${reservation_time}) is not a valid time`}
+  // check time individually to see if it is a valid date in the future
+  let time = reservation_time.split(":")
+  let hours = parseInt(time[0])
+  let minutes = parseInt(time[1]);
+  let currentTime = new Date();
+  let currentHours = currentTime.getHours();
+  let currentMinutes = currentTime.getMinutes();
+  console.log(time, hours, minutes, currentTime, currentHours, currentMinutes)
+  const error = { 
+    status: 400,
+    message: `reservation_time (${reservation_time}) is not a valid time`
+  }
+  if (hours <= 10 && minutes <= 30) return next(error)
+  if (hours >= 22 || (hours >= 21 && minutes >= 30)) return next(error)
+  if (hours < currentHours) return next(error)
+
   return match ? next() : next(error)
 }
 
