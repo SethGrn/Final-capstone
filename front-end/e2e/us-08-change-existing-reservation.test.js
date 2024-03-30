@@ -175,8 +175,11 @@ describe("US-08 - Change an existing reservation - E2E", () => {
 
     test("filling and submitting form updates the reservation", async () => {
       const firstNameInput = await page.$("input[name=first_name]");
+      console.log("firstNameInput \n", firstNameInput)
       await firstNameInput.click({ clickCount: 3 });
+      console.log("1")
       await firstNameInput.type("John");
+      console.log("2")
 
       const [submitButton] = await page.$x(
         "//button[contains(translate(., 'ACDEFGHIJKLMNOPQRSTUVWXYZ', 'acdefghijklmnopqrstuvwxyz'), 'submit')]"
