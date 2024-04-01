@@ -55,7 +55,7 @@ function validDate (req, res, next) {
   if (!match) errorCode = 1;
 
   // check if current date is a Tuesday
-  if (reservation_day.getDay() === 1) errorCode = 2;
+  if (reservation_day.getDay() === 2) errorCode = 2;
 
   // check if current day is in the past
   if (reservation_date < day) errorCode = 3;
