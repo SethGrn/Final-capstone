@@ -26,6 +26,24 @@ export default function ReservationForm ({ reservation = null }) {
             [target.name]: target.value
         })
     }
+    const mobileNumberChangeHandler = ({ target }) => {
+        const currentChar = target.value[target.value.length - 1];
+
+        if (!isNaN(currentChar)) {
+            if (formData.mobile_number.length < target.value.length && (target.value.length === 4 || target.value.length === 8)) {
+                target.value = `${formData.mobile_number}-${target.value[target.value.length - 1]}`
+            }
+            setFormData({
+                ...formData,
+                [target.name]: target.value
+            })
+        } else if (formData.mobile_number.length > target.value.length) {
+            setFormData({
+                ...formData,
+                [target.name]: target.value
+            })
+        }
+    }
     
     async function submitHandler(event) {
         event.preventDefault();
@@ -40,6 +58,7 @@ export default function ReservationForm ({ reservation = null }) {
       
             // Parse the number of people from formData
             formData.people = parseInt(formData.people, 10);
+
               
             if (METHOD === "POST") {
                 // Await the createReservation function with the formData and abort signal
@@ -110,17 +129,17 @@ export default function ReservationForm ({ reservation = null }) {
               </div>
               <hr />
               <div className="form-group">
-                  <label htmlFor="mobile_number">Number:</label>
+                  <label htmlFor="mobile_number">Mobile number:</label>
                   <input
                       name="mobile_number"
                       id="mobile_number"
-                      type="text"
+                      type="tel"
                       className="form-control"
                       minLength="10"
                       maxLength="12"
                       required
                       value={formData.mobile_number}
-                      onChange={changeHandler}
+                      onChange={mobileNumberChangeHandler}
                   />
               </div>
               <hr />
